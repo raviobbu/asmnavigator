@@ -421,14 +421,63 @@ function verifyNPI(){
 function submitReg(){
   var email=document.getElementById('r-email').value;
   var npi=document.getElementById('npi-input').value;
+  var fname=document.getElementById('r-first').value;
+  var lname=document.getElementById('r-last').value;
+  var phone=document.getElementById('r-phone').value;
+  var ehr=document.getElementById('r-ehr').value;
+  var concern=document.getElementById('r-concern').value;
+  var vbc=document.getElementById('r-vbc').value;
   if(!email||!email.includes('@')){alert('Please enter a valid email address.');return;}
-  document.getElementById('npi-row').style.display='none';
-  document.getElementById('npi-result').style.display='none';
-  document.getElementById('reg-fields').style.display='none';
-  document.getElementById('form-label-npi').style.display='none';
-  document.getElementById('form-sub-npi').style.display='none';
-  var s=document.getElementById('success-panel');s.style.display='block';
-  document.getElementById('success-badge').textContent='NPI '+npi+' · '+email;
+  if(!fname){alert('Please enter your first name.');return;}
+
+  var btn=document.querySelector('.submit-btn');
+  btn.textContent='Submitting...';
+  btn.disabled=true;
+
+  var npiResult=document.getElementById('npi-result');
+  var orgText=npiResult?npiResult.textContent:'';
+
+  fetch('https://formspree.io/f/xaqaepnq',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({
+      'NPI':npi,
+      'First Name':fname,
+      'Last Name':lname,
+      'Email':email,
+      'Phone':phone||'Not provided',
+      'EHR System':ehr||'Not specified',
+      'Biggest ASM Concern':concern||'Not specified',
+      'VBC Participation':vbc||'Not specified',
+      'CMS Participant Info':orgText,
+      '_subject':'New ASM Navigator waitlist signup — NPI '+npi+' — '+fname+' '+lname
+    })
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    if(data.ok){
+      document.getElementById('npi-row').style.display='none';
+      document.getElementById('npi-result').style.display='none';
+      document.getElementById('reg-fields').style.display='none';
+      document.getElementById('form-label-npi').style.display='none';
+      document.getElementById('form-sub-npi').style.display='none';
+      var s=document.getElementById('success-panel');s.style.display='block';
+      document.getElementById('success-badge').textContent='NPI '+npi+' · '+email;
+    } else {
+      btn.textContent='Reserve my early access spot';
+      btn.disabled=false;
+      alert('Something went wrong. Please try again or email us at hello@asmnavigator.com');
+    }
+  })
+  .catch(function(){
+    document.getElementById('npi-row').style.display='none';
+    document.getElementById('npi-result').style.display='none';
+    document.getElementById('reg-fields').style.display='none';
+    document.getElementById('form-label-npi').style.display='none';
+    document.getElementById('form-sub-npi').style.display='none';
+    var s=document.getElementById('success-panel');s.style.display='block';
+    document.getElementById('success-badge').textContent='NPI '+npi+' · '+email;
+  });
 }
 
 var qa={

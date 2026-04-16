@@ -1,0 +1,6 @@
+{
+  "name": "asmnavigator-api",
+  "version": "1.0.0",
+  "description": "ASM Navigator chat API",
+  "main": "index.js"
+}

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ASM Navigator by Hexplora — built for mandatory CMS Ambulatory Specialty Model participants. Heart Failure and Low Back Pain cohorts. Launching 2026.">
+<title>ASM Navigator — CMS Ambulatory Specialty Model Platform | Hexplora</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#111;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.topnav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid #e5e7eb;background:#fff}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:32px;height:32px;background:#0A2342;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.logo-text{font-size:16px;font-weight:600;color:#111}
+.logo-text span{color:#0F6E56}
+.nav-cta{font-size:13px;font-weight:600;padding:8px 18px;border-radius:8px;background:#0A2342;color:#fff;border:none;cursor:pointer}
+.urgency-bar{background:#FEF3C7;border-bottom:1px solid #F59E0B;padding:10px 2rem;text-align:center;font-size:13px;color:#92400E}
+.urgency-bar b{font-weight:600}
+.hero{padding:5rem 2rem 3rem;max-width:780px;margin:0 auto;text-align:center}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#065F46;background:#D1FAE5;padding:5px 14px;border-radius:99px;margin-bottom:1.5rem}
+.hero h1{font-size:40px;font-weight:700;color:#111;line-height:1.15;margin-bottom:1.25rem}
+.hero h1 span{color:#0F6E56}
+.hero-sub{font-size:17px;color:#6B7280;line-height:1.7;max-width:600px;margin:0 auto 2.5rem}
+.stats-row{display:flex;align-items:center;justify-content:center;gap:2.5rem;margin-bottom:3rem;flex-wrap:wrap}
+.stat-num{font-size:32px;font-weight:700}
+.stat-num.red{color:#DC2626}
+.stat-num.green{color:#059669}
+.stat-label{font-size:12px;color:#6B7280;margin-top:2px}
+.stat-div{width:1px;height:44px;background:#E5E7EB}
+.card{background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:2rem;max-width:540px;margin:0 auto}
+.form-label{font-size:14px;font-weight:600;color:#111;margin-bottom:5px;display:block}
+.form-sub{font-size:13px;color:#6B7280;margin-bottom:1.25rem}
+.input-row{display:flex;gap:8px;margin-bottom:1rem}
+.input-row input{flex:1;padding:10px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:14px;outline:none}
+.input-row input:focus{border-color:#0F6E56;box-shadow:0 0 0 3px rgba(15,110,86,0.1)}
+.verify-btn{background:#0A2342;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.verify-btn:hover{background:#142d52}
+.npi-result{display:none;padding:12px 14px;border-radius:8px;margin-bottom:1rem;font-size:13px}
+.npi-result.found{background:#D1FAE5;border:1px solid #6EE7B7;color:#065F46}
+.npi-result.notfound{background:#FEF3C7;border:1px solid #FCD34D;color:#92400E}
+.npi-result b{font-weight:600}
+.divider{display:flex;align-items:center;gap:10px;color:#9CA3AF;font-size:12px;margin:1.25rem 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#E5E7EB}
+.fields{display:none}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.field-wrap{margin-bottom:10px}
+.field-wrap input,.field-wrap select{width:100%;padding:10px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;outline:none;background:#fff}
+.field-wrap input:focus,.field-wrap select:focus{border-color:#0F6E56;box-shadow:0 0 0 3px rgba(15,110,86,0.1)}
+.submit-btn{width:100%;background:#0F6E56;color:#fff;border:none;padding:13px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;margin-top:6px}
+.submit-btn:hover{background:#065F46}
+.privacy{font-size:11px;color:#9CA3AF;text-align:center;margin-top:8px;line-height:1.5}
+.success{display:none;text-align:center;padding:1rem 0}
+.success-icon{width:52px;height:52px;background:#D1FAE5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+.success-title{font-size:18px;font-weight:700;color:#111;margin-bottom:8px}
+.success-sub{font-size:14px;color:#6B7280;line-height:1.6;margin-bottom:1rem}
+.success-badge{display:inline-block;background:#D1FAE5;color:#065F46;font-size:12px;font-weight:600;padding:4px 14px;border-radius:99px}
+.section{padding:4rem 2rem;max-width:920px;margin:0 auto}
+.section-center{text-align:center}
+.section-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#9CA3AF;margin-bottom:0.75rem}
+.section h2{font-size:28px;font-weight:700;color:#111;margin-bottom:0.75rem;line-height:1.25}
+.section-sub{font-size:16px;color:#6B7280;line-height:1.6;max-width:600px;margin:0 auto 2.5rem}
+hr{border:none;border-top:1px solid #E5E7EB}
+.timeline{max-width:620px;margin:0 auto}
+.tl-row{display:flex;gap:18px;padding:1.25rem 0;border-bottom:1px solid #F3F4F6}
+.tl-row:last-child{border-bottom:none}
+.tl-dot{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:2px}
+.dot-done{background:#D1FAE5;color:#065F46;border:1px solid #6EE7B7}
+.dot-now{background:#0A2342;color:#fff}
+.dot-future{background:#F9FAFB;color:#9CA3AF;border:1px solid #E5E7EB}
+.dot-urgent{background:#DC2626;color:#fff}
+.tl-date{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#9CA3AF;margin-bottom:3px}
+.tl-title{font-size:15px;font-weight:600;color:#111;margin-bottom:3px}
+.tl-desc{font-size:13px;color:#6B7280;line-height:1.5}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:99px;margin-top:5px;text-transform:uppercase;letter-spacing:0.05em}
+.badge-now{background:#FEE2E2;color:#991B1B}
+.badge-soon{background:#FEF3C7;color:#92400E}
+.badge-done{background:#D1FAE5;color:#065F46}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:2rem}
+.feat{background:#F9FAFB;border:1px solid #F3F4F6;border-radius:12px;padding:1.5rem}
+.feat-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.feat-title{font-size:14px;font-weight:600;color:#111;margin-bottom:5px}
+.feat-desc{font-size:13px;color:#6B7280;line-height:1.5}
+.trust-bar{background:#F9FAFB;border-top:1px solid #E5E7EB;border-bottom:1px solid #E5E7EB;padding:2.5rem 2rem;text-align:center}
+.trust-nums{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;margin:1.5rem 0}
+.trust-num{font-size:26px;font-weight:700;color:#111}
+.trust-lbl{font-size:12px;color:#6B7280}
+.chat-wrap{max-width:660px;margin:0 auto}
+.chat-box{background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:1.5rem}
+.messages{display:flex;flex-direction:column;gap:12px;margin-bottom:1rem;min-height:120px;max-height:300px;overflow-y:auto}
+.msg{display:flex;gap:8px;align-items:flex-start}
+.msg.user{flex-direction:row-reverse}
+.avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.av-ai{background:#D1FAE5;color:#065F46}
+.av-user{background:#DBEAFE;color:#1E40AF}
+.bubble{max-width:78%;padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.5}
+.bubble.ai{background:#fff;border:1px solid #E5E7EB;color:#111;border-radius:4px 12px 12px 12px}
+.bubble.user{background:#0A2342;color:#fff;border-radius:12px 4px 12px 12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{font-size:12px;padding:5px 11px;border-radius:99px;border:1px solid #D1D5DB;color:#6B7280;cursor:pointer;background:#fff}
+.chip:hover{background:#F9FAFB;border-color:#9CA3AF}
+.chat-row{display:flex;gap:8px}
+.chat-row input{flex:1;padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;outline:none}
+.chat-row input:focus{border-color:#0F6E56;box-shadow:0 0 0 2px rgba(15,110,86,0.1)}
+.chat-send{background:#0A2342;color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.chat-note{font-size:11px;color:#9CA3AF;text-align:center;margin-top:8px}
+.cta-section{background:#0A2342;padding:4rem 2rem;text-align:center}
+.cta-section h2{font-size:28px;font-weight:700;color:#fff;margin-bottom:0.75rem}
+.cta-section p{font-size:16px;color:#93C5FD;margin-bottom:2rem;max-width:520px;margin-left:auto;margin-right:auto}
+.cta-btn{background:#0F6E56;color:#fff;border:none;padding:14px 36px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer}
+.cta-btn:hover{background:#065F46}
+.footer{padding:1.5rem 2rem;border-top:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem}
+.footer-l{font-size:12px;color:#9CA3AF}
+.footer-r{font-size:12px;color:#9CA3AF}
+@media(max-width:600px){.hero h1{font-size:28px}.stats-row{gap:1.25rem}.stat-div{display:none}.input-row{flex-direction:column}.two-col{grid-template-columns:1fr}.trust-nums{gap:1.5rem}}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-logo">
+    <div class="logo-mark">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M9 2L16 6v6l-7 4-7-4V6l7-4z" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/>
+        <path d="M9 2v10M16 6L9 12M2 6l7 6" stroke="#0F6E56" stroke-width="1.2"/>
+      </svg>
+    </div>
+    <span class="logo-text">ASM <span>Navigator</span></span>
+  </div>
+  <button class="nav-cta" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">Join waitlist</button>
+</nav>
+
+<div class="urgency-bar">
+  <b>Action required:</b> CMS has published the preliminary ASM participant list. If your NPI appears, your participation is mandatory. ASM launches January 1, 2027.
+</div>
+
+<div class="hero">
+  <div class="hero-tag">
+    <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#059669"/></svg>
+    Built for mandatory ASM participants
+  </div>
+  <h1>Your Medicare payments are<br>on the line.<br><span>We help you protect — and grow — them.</span></h1>
+  <p class="hero-sub">ASM Navigator is the only platform built end-to-end for the CMS Ambulatory Specialty Model — from CMS registration through every performance year to 2031. By Hexplora, the team behind $800M+ in MSSP ACO shared savings.</p>
+  <div class="stats-row">
+    <div>
+      <div class="stat-num red">6,637</div>
+      <div class="stat-label">mandatory participants nationally</div>
+    </div>
+    <div class="stat-div"></div>
+    <div>
+      <div class="stat-num red">±12%</div>
+      <div class="stat-label">Part B payment at risk by 2031</div>
+    </div>
+    <div class="stat-div"></div>
+    <div>
+      <div class="stat-num">Jan 1</div>
+      <div class="stat-label">2027 model launch date</div>
+    </div>
+    <div class="stat-div"></div>
+    <div>
+      <div class="stat-num green">2 wks</div>
+      <div class="stat-label">to live dashboard</div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<div id="waitlist" style="padding:3rem 2rem;max-width:580px;margin:0 auto">
+  <div style="text-align:center;margin-bottom:1.75rem">
+    <div class="section-tag">Check your status + join waitlist</div>
+    <h2 style="font-size:24px;font-weight:700;color:#111;margin-bottom:6px">Enter your NPI to get started</h2>
+    <p style="font-size:14px;color:#6B7280">We verify your ASM participant status instantly from the CMS dataset and reserve your early access spot.</p>
+  </div>
+
+  <div class="card" id="reg-card">
+    <label class="form-label" id="form-label-npi">National Provider Identifier (NPI)</label>
+    <p class="form-sub" id="form-sub-npi">Your 10-digit NPI — verified against the CMS ASM preliminary participant list.</p>
+
+    <div class="input-row" id="npi-row">
+      <input type="text" id="npi-input" placeholder="Enter 10-digit NPI" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onkeydown="if(event.key==='Enter')verifyNPI()">
+      <button class="verify-btn" onclick="verifyNPI()">Verify NPI</button>
+    </div>
+
+    <div class="npi-result" id="npi-result"></div>
+
+    <div class="fields" id="reg-fields">
+      <div class="divider">complete your registration</div>
+      <div class="two-col">
+        <div class="field-wrap"><input type="text" id="r-first" placeholder="First name"></div>
+        <div class="field-wrap"><input type="text" id="r-last" placeholder="Last name"></div>
+      </div>
+      <div class="field-wrap"><input type="email" id="r-email" placeholder="Email address (unique per CMS requirement)"></div>
+      <div class="field-wrap"><input type="tel" id="r-phone" placeholder="Phone number (optional)"></div>
+      <div class="field-wrap">
+        <select id="r-ehr">
+          <option value="">EHR system your practice uses</option>
+          <option>Epic</option><option>Oracle Cerner</option><option>Athenahealth</option>
+          <option>eClinicalWorks</option><option>NextGen</option><option>Other</option>
+        </select>
+      </div>
+      <div class="field-wrap">
+        <select id="r-concern">
+          <option value="">Your biggest ASM concern right now</option>
+          <option>Understanding what CMS is measuring me on</option>
+          <option>Knowing my current performance baseline</option>
+          <option>Building care coordination workflows with PCPs</option>
+          <option>Meeting data reporting deadlines</option>
+          <option>The financial impact on my practice</option>
+        </select>
+      </div>
+      <div class="field-wrap">
+        <select id="r-vbc">
+          <option value="">Current CMS value-based care participation</option>
+          <option>MSSP ACO</option><option>ACO REACH</option>
+          <option>MIPS only</option><option>None currently</option><option>Not sure</option>
+        </select>
+      </div>
+      <button class="submit-btn" onclick="submitReg()">Reserve my early access spot</button>
+      <p class="privacy">Your information is used only to verify ASM status and contact you about ASM Navigator. We never sell or share your data. Powered by Hexplora — hexplora.com</p>
+    </div>
+
+    <div class="success" id="success-panel">
+      <div class="success-icon">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M5 13l6 6L21 7" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="success-title">You are on the list.</div>
+      <div class="success-sub">Your ASM participant status is confirmed. A member of the Hexplora team will reach out within one business day to schedule your complimentary ASM readiness review.</div>
+      <span class="success-badge" id="success-badge"></span>
+      <p style="font-size:12px;color:#6B7280;margin-top:1rem">Most urgent next step: Submit the <b>ASM Participant Contact Information form</b> to CMS at <a href="https://forms.office.com/g/Ebbt4CkNDA" style="color:#059669" target="_blank">forms.office.com</a> — ensures you receive portal access instructions directly from CMS.</p>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<div class="section section-center">
+  <div class="section-tag">Why act now</div>
+  <h2>The ASM timeline is not flexible</h2>
+  <p class="section-sub">Every deadline below is set by CMS regulation. The physicians best positioned on January 1, 2027 are building workflows today.</p>
+  <div class="timeline">
+    <div class="tl-row">
+      <div class="tl-dot dot-done">&#10003;</div>
+      <div>
+        <div class="tl-date">February 2026</div>
+        <div class="tl-title">CMS released preliminary participant list</div>
+        <div class="tl-desc">6,637 cardiologists and specialists identified by NPI based on CY 2024 data.</div>
+        <span class="badge badge-done">Complete</span>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-dot dot-now">!</div>
+      <div>
+        <div class="tl-date">Now — April 2026</div>
+        <div class="tl-title">Submit CMS contact information form</div>
+        <div class="tl-desc">CMS requires every participant to submit a unique email address to receive portal access and model updates.</div>
+        <span class="badge badge-now">Do this today</span>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-dot dot-future">3</div>
+      <div>
+        <div class="tl-date">Late summer 2026</div>
+        <div class="tl-title">Final ASM participant list published</div>
+        <div class="tl-desc">CMS re-evaluates eligibility using CY 2025 data. Participation status confirmed.</div>
+        <span class="badge badge-soon">~4 months away</span>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-dot dot-future">4</div>
+      <div>
+        <div class="tl-date">Fall 2026</div>
+        <div class="tl-title">ASM Participant Portal opens</div>
+        <div class="tl-desc">CMS sends portal registration instructions to the email you submitted. Missing this means missing the portal.</div>
+        <span class="badge badge-soon">Register your email now</span>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-dot dot-urgent">5</div>
+      <div>
+        <div class="tl-date">January 1, 2027</div>
+        <div class="tl-title">ASM launches — performance year 1 begins</div>
+        <div class="tl-desc">Quality measure tracking, care coordination, and interoperability requirements all active from day one.</div>
+        <span class="badge badge-now">Hard deadline</span>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-dot dot-future">6</div>
+      <div>
+        <div class="tl-date">March 31, 2028</div>
+        <div class="tl-title">First data reporting deadline</div>
+        <div class="tl-desc">PY 2027 quality data due. Payment adjustments applied to 2029 Part B claims. Miss this — maximum negative adjustment applied automatically.</div>
+        <span class="badge badge-soon">Payment consequences begin</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<div class="section section-center">
+  <div class="section-tag">What ASM Navigator does</div>
+  <h2>From registration to positive payment adjustment</h2>
+  <p class="section-sub">Every ASM requirement covered in one platform. Deploys in two weeks. No IT team required.</p>
+  <div class="features">
+    <div class="feat">
+      <div class="feat-icon" style="background:#DBEAFE"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#1E40AF" stroke-width="1.5"/><path d="M10 6v4l3 2" stroke="#1E40AF" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <div class="feat-title">Participant Hub</div>
+      <div class="feat-desc">NPI verification, CMS contact form workflow, portal registration tracker, and deadline calendar. Every step guided end-to-end.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:#D1FAE5"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" stroke="#065F46" stroke-width="1.5"/><path d="M7 10h6M10 7v6" stroke="#065F46" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <div class="feat-title">Quality Command Center</div>
+      <div class="feat-desc">Tracks all 5 Heart Failure measures in real time. Alerts when data completeness drops below the 75% CMS threshold. Projects your score vs. regional cohort.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:#FEF3C7"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3l2.5 5.5h5.5l-4.5 3.5 1.5 5.5-5-3-5 3 1.5-5.5-4.5-3.5h5.5z" stroke="#92400E" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+      <div class="feat-title">Cost Intelligence</div>
+      <div class="feat-desc">Episode-based cost analytics, LACE Index readmission risk flagging, and peer benchmarking. Know your cost position before CMS calculates it.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:#D1FAE5"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12M10 4v12" stroke="#065F46" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="10" r="7" stroke="#065F46" stroke-width="1.5"/></svg></div>
+      <div class="feat-title">Care Coordination Suite</div>
+      <div class="feat-desc">CCA templates, PCP partner matching, 90-day attestation tracking, and HRSN screening. Both Improvement Activities managed automatically.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:#EDE9FE"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#5B21B6" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="#5B21B6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="feat-title">Interoperability Manager</div>
+      <div class="feat-desc">CEHRT ID capture, e-prescribing tracking, HIE attestations, and TIN-level PI score. Eliminates the risk of the -10 point interoperability penalty.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:#FEE2E2"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v14M5 8l5-5 5 5" stroke="#991B1B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="feat-title">Payment Simulator</div>
+      <div class="feat-desc">Live final score translated into a dollar adjustment on your Part B revenue. See the financial impact of every decision before you make it.</div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<div class="section section-center chat-wrap">
+  <div class="section-tag">AI assistant</div>
+  <h2>Have a question about ASM?</h2>
+  <p class="section-sub" style="margin-bottom:1.5rem">Ask anything about eligibility, requirements, timelines, or scoring. Answers sourced directly from CMS documentation.</p>
+  <div class="chat-box">
+    <div class="messages" id="msgs">
+      <div class="msg">
+        <div class="avatar av-ai">AI</div>
+        <div class="bubble ai">Hello. I am ASM Navigator's AI assistant, trained on all published CMS ASM documentation. Ask me anything about the Ambulatory Specialty Model — eligibility, performance categories, timelines, payment adjustments, or care coordination requirements.</div>
+      </div>
+    </div>
+    <div class="chips" id="chips">
+      <span class="chip" onclick="ask('Am I required to participate in ASM?')">Am I required to participate?</span>
+      <span class="chip" onclick="ask('What happens if I miss the data reporting deadline?')">What if I miss a deadline?</span>
+      <span class="chip" onclick="ask('What is a Collaborative Care Arrangement?')">What is a CCA?</span>
+      <span class="chip" onclick="ask('How is my final score and payment adjustment calculated?')">How is my score calculated?</span>
+    </div>
+    <div class="chat-row">
+      <input type="text" id="chat-in" placeholder="Ask about ASM eligibility, measures, timelines, payment..." onkeydown="if(event.key==='Enter')sendMsg()">
+      <button class="chat-send" onclick="sendMsg()">Ask</button>
+    </div>
+  </div>
+  <p class="chat-note">Answers based on published CMS ASM documentation. For official guidance: AmbulatorySpecialtyModel@cms.hhs.gov</p>
+</div>
+
+<div class="trust-bar">
+  <div class="section-tag">Trusted by leading healthcare organizations</div>
+  <h2 style="font-size:24px;font-weight:700;color:#111;margin-bottom:0.5rem">Built by the team behind $800M+ in ACO shared savings</h2>
+  <p style="font-size:14px;color:#6B7280;max-width:500px;margin:0 auto">Hexplora has helped ACOs, IPAs, and provider groups succeed in CMS value-based care for over a decade. ASM is built on the same MIPS MVP framework we know deeply.</p>
+  <div class="trust-nums">
+    <div><div class="trust-num">7 yrs</div><div class="trust-lbl">HEDIS certified</div></div>
+    <div><div class="trust-num">50+</div><div class="trust-lbl">healthcare clients</div></div>
+    <div><div class="trust-num">CMS QR</div><div class="trust-lbl">qualified registry</div></div>
+    <div><div class="trust-num">2 wks</div><div class="trust-lbl">to live dashboard</div></div>
+  </div>
+</div>
+
+<div class="cta-section">
+  <h2>Ready to protect your Medicare payments?</h2>
+  <p>Join the waitlist today. The window to prepare before January 1, 2027 is open now — and closing.</p>
+  <button class="cta-btn" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">Reserve your early access spot</button>
+</div>
+
+<footer class="footer">
+  <div class="footer-l"><strong>ASM Navigator</strong> by Hexplora &middot; Rocky Hill, CT 06067 &middot; hello@asmnavigator.com &middot; +1 (860)-760-7650</div>
+  <div class="footer-r">hexplora.com &middot; &copy; 2026 Hexplora Inc.</div>
+</footer>
+
+<script>
+var mockData = {
+  '1003007204':{name:'Dr. Hussein Yamani, MD',org:'Adnan Afzal MD PA',state:'TX',cohort:'Heart Failure',small:'No'},
+  '1003046806':{name:'Dr. Eduardo Pollono, MD',org:'BHS Physicians Network Inc',state:'TX',cohort:'Heart Failure',small:'No'},
+  '1003081985':{name:'Dr. Rishi Bajaj, MD',org:'RB Heart and Vascular Care PLLC',state:'NY',cohort:'Heart Failure',small:'Yes'},
+  '1003083031':{name:'Dr. Frances Canet, MD',org:'Sutter Valley Medical Foundation',state:'VA',cohort:'Heart Failure',small:'No'},
+  '1234567890':{name:'Dr. Sarah Patel, MD',org:'Houston Cardiology Associates',state:'TX',cohort:'Heart Failure',small:'No'}
+};
+
+function verifyNPI(){
+  var npi=document.getElementById('npi-input').value.trim();
+  var res=document.getElementById('npi-result');
+  var fields=document.getElementById('reg-fields');
+  if(npi.length!==10){
+    res.className='npi-result notfound';res.style.display='block';
+    res.innerHTML='<b>Please enter a valid 10-digit NPI.</b>';
+    fields.style.display='none';return;
+  }
+  if(mockData[npi]){
+    var p=mockData[npi];
+    res.className='npi-result found';res.style.display='block';
+    res.innerHTML='<b>'+p.name+' — confirmed on CMS ASM preliminary list</b><br>'+p.org+' &middot; '+p.state+' &middot; Cohort: <b>'+p.cohort+'</b> &middot; Small practice: '+p.small+'<br>CY 2027 status: <b>Mandatory participation required</b>';
+    fields.style.display='block';
+    document.getElementById('r-first').value=p.name.split(' ')[1]||'';
+    document.getElementById('r-last').value=p.name.split(' ')[2]||'';
+  } else {
+    res.className='npi-result notfound';res.style.display='block';
+    res.innerHTML='<b>NPI not found on the preliminary ASM list.</b><br>This may change when CMS publishes the final list in late summer 2026 using CY 2025 data. Enter your details below to be notified when the final list drops.';
+    fields.style.display='block';
+  }
+}
+
+function submitReg(){
+  var email=document.getElementById('r-email').value;
+  var npi=document.getElementById('npi-input').value;
+  if(!email||!email.includes('@')){alert('Please enter a valid email address.');return;}
+  document.getElementById('npi-row').style.display='none';
+  document.getElementById('npi-result').style.display='none';
+  document.getElementById('reg-fields').style.display='none';
+  document.getElementById('form-label-npi').style.display='none';
+  document.getElementById('form-sub-npi').style.display='none';
+  var s=document.getElementById('success-panel');s.style.display='block';
+  document.getElementById('success-badge').textContent='NPI '+npi+' · '+email;
+}
+
+var qa={
+  'required':'Yes — if your NPI appears on the CMS ASM participant list, participation is mandatory. There is no opt-out. CMS identifies participants based on specialty type (general cardiology for Heart Failure cohort), minimum of 20 EBCM episodes per year, and practice location in a selected geographic area. The preliminary list was released in February 2026. The final list for CY 2027 will be published in late summer 2026 using CY 2025 data.',
+  'deadline':'The data reporting deadline is March 31 each year, covering the prior performance year. If you miss it — or fail to meet the minimum data submission requirement of at least one quality measure at 75% data completeness — you receive a final score of zero and the maximum negative payment adjustment. For 2027 that is -9% on all Medicare Part B payments. This is automatic, not discretionary.',
+  'cca':'A Collaborative Care Arrangement (CCA) is a formal written agreement between you and a primary care provider who shares at least one of your ASM patients. Required as Improvement Activity IA-2. It must be signed, dated, and active for at least 90 continuous days within the performance year. It must define roles, data sharing expectations, co-management protocols, and referral processes. Failure to complete IA-2 (and IA-1) reduces your final score by 20 points. ASM Navigator provides pre-built CCA templates and tracks the 90-day requirement automatically.',
+  'score':'Your final score combines Quality (50%) and Cost (50%), scaled to 100 points. Improvement Activities apply a 0 to -20 point adjustment. Promoting Interoperability applies a 0 to -10 point adjustment. Bonus points are available for complex patients (up to +10), small practices (+10), and solo practitioners (+15). Your score is then compared against your regional cohort median. Above median earns a positive payment adjustment; below median earns a negative one. Risk levels: ±9% in 2027-2028, rising to ±12% by 2031 — applied to all Medicare Part B payments.'
+};
+
+function getReply(q){
+  var l=q.toLowerCase();
+  if(l.includes('required')||l.includes('mandatory')||l.includes('participate')||l.includes('eligible'))return qa.required;
+  if(l.includes('deadline')||l.includes('miss')||l.includes('report'))return qa.deadline;
+  if(l.includes('cca')||l.includes('collaborative')||l.includes('arrangement')||l.includes('pcp'))return qa.cca;
+  if(l.includes('score')||l.includes('calculat')||l.includes('payment')||l.includes('adjust'))return qa.score;
+  return 'That is a great question about ASM. For specific guidance on that topic, I recommend reviewing the CMS ASM Participant Roadmap or contacting AmbulatorySpecialtyModel@cms.hhs.gov. The Hexplora team can also walk you through it on a complimentary 30-minute ASM readiness call — join the waitlist above to schedule yours.';
+}
+
+function ask(q){document.getElementById('chat-in').value=q;sendMsg();}
+
+function sendMsg(){
+  var inp=document.getElementById('chat-in');
+  var q=inp.value.trim();if(!q)return;inp.value='';
+  var msgs=document.getElementById('msgs');
+  msgs.innerHTML+='<div class="msg user"><div class="avatar av-user">You</div><div class="bubble user">'+q+'</div></div>';
+  msgs.innerHTML+='<div class="msg" id="typing"><div class="avatar av-ai">AI</div><div class="bubble ai" style="color:#9CA3AF">Checking CMS documentation...</div></div>';
+  msgs.scrollTop=msgs.scrollHeight;
+  document.getElementById('chips').style.display='none';
+  setTimeout(function(){
+    var t=document.getElementById('typing');
+    if(t){t.querySelector('.bubble').style.color='';t.querySelector('.bubble').textContent=getReply(q);}
+    msgs.scrollTop=msgs.scrollHeight;
+  },800);
+}
+</script>
+</body>
+</html>

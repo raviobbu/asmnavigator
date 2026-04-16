@@ -387,13 +387,7 @@ hr{border:none;border-top:1px solid #E5E7EB}
 </footer>
 
 <script>
-var mockData = {
-  '1003007204':{name:'Dr. Hussein Yamani, MD',org:'Adnan Afzal MD PA',state:'TX',cohort:'Heart Failure',small:'No'},
-  '1003046806':{name:'Dr. Eduardo Pollono, MD',org:'BHS Physicians Network Inc',state:'TX',cohort:'Heart Failure',small:'No'},
-  '1003081985':{name:'Dr. Rishi Bajaj, MD',org:'RB Heart and Vascular Care PLLC',state:'NY',cohort:'Heart Failure',small:'Yes'},
-  '1003083031':{name:'Dr. Frances Canet, MD',org:'Sutter Valley Medical Foundation',state:'VA',cohort:'Heart Failure',small:'No'},
-  '1234567890':{name:'Dr. Sarah Patel, MD',org:'Houston Cardiology Associates',state:'TX',cohort:'Heart Failure',small:'No'}
-};
+
 
 function verifyNPI(){
   var npi=document.getElementById('npi-input').value.trim();
@@ -404,13 +398,16 @@ function verifyNPI(){
     res.innerHTML='<b>Please enter a valid 10-digit NPI.</b>';
     fields.style.display='none';return;
   }
-  if(mockData[npi]){
-    var p=mockData[npi];
+  var p=typeof D!=='undefined'?D[npi]:null;
+  if(p){
+    var cohort=p[3]==='HF'?'Heart Failure':'Low Back Pain';
+    var small=p[4]==='Y'?'Yes':'No';
     res.className='npi-result found';res.style.display='block';
-    res.innerHTML='<b>'+p.name+' — confirmed on CMS ASM preliminary list</b><br>'+p.org+' &middot; '+p.state+' &middot; Cohort: <b>'+p.cohort+'</b> &middot; Small practice: '+p.small+'<br>CY 2027 status: <b>Mandatory participation required</b>';
+    res.innerHTML='<b>'+p[0]+' — confirmed on CMS ASM preliminary list</b><br>'+p[1]+' &middot; '+p[2]+' &middot; Cohort: <b>'+cohort+'</b> &middot; Small practice: '+small+'<br>CY 2027 status: <b>Mandatory participation required</b>';
     fields.style.display='block';
-    document.getElementById('r-first').value=p.name.split(' ')[1]||'';
-    document.getElementById('r-last').value=p.name.split(' ')[2]||'';
+    var parts=p[0].split(' ');
+    document.getElementById('r-first').value=parts[1]||'';
+    document.getElementById('r-last').value=parts[2]||'';
   } else {
     res.className='npi-result notfound';res.style.display='block';
     res.innerHTML='<b>NPI not found on the preliminary ASM list.</b><br>This may change when CMS publishes the final list in late summer 2026 using CY 2025 data. Enter your details below to be notified when the final list drops.';
@@ -513,5 +510,6 @@ function sendMsg(){
   },800);
 }
 </script>
+<script src="npi_data.js"></script>
 </body>
 </html>

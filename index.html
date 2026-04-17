@@ -477,37 +477,91 @@ function submitReg(){
   });
 }
 
-var qa={
-  'required':'Yes — if your NPI appears on the CMS ASM participant list, participation is mandatory. There is no opt-out. CMS identifies participants based on specialty type (general cardiology for Heart Failure cohort), minimum of 20 EBCM episodes per year, and practice location in a selected geographic area. The preliminary list was released in February 2026. The final list for CY 2027 will be published in late summer 2026 using CY 2025 data.',
-  'deadline':'The data reporting deadline is March 31 each year, covering the prior performance year. If you miss it — or fail to meet the minimum data submission requirement of at least one quality measure at 75% data completeness — you receive a final score of zero and the maximum negative payment adjustment. For 2027 that is -9% on all Medicare Part B payments. This is automatic, not discretionary.',
-  'cca':'A Collaborative Care Arrangement (CCA) is a formal written agreement between you and a primary care provider who shares at least one of your ASM patients. Required as Improvement Activity IA-2. It must be signed, dated, and active for at least 90 continuous days within the performance year. It must define roles, data sharing expectations, co-management protocols, and referral processes. Failure to complete IA-2 (and IA-1) reduces your final score by 20 points. ASM Navigator provides pre-built CCA templates and tracks the 90-day requirement automatically.',
-  'score':'Your final score combines Quality (50%) and Cost (50%), scaled to 100 points. Improvement Activities apply a 0 to -20 point adjustment. Promoting Interoperability applies a 0 to -10 point adjustment. Bonus points are available for complex patients (up to +10), small practices (+10), and solo practitioners (+15). Your score is then compared against your regional cohort median. Above median earns a positive payment adjustment; below median earns a negative one. Risk levels: ±9% in 2027-2028, rising to ±12% by 2031 — applied to all Medicare Part B payments.'
-};
 
-function getReply(q){
-  var l=q.toLowerCase();
-  if(l.includes('required')||l.includes('mandatory')||l.includes('participate')||l.includes('eligible'))return qa.required;
-  if(l.includes('deadline')||l.includes('miss')||l.includes('report'))return qa.deadline;
-  if(l.includes('cca')||l.includes('collaborative')||l.includes('arrangement')||l.includes('pcp'))return qa.cca;
-  if(l.includes('score')||l.includes('calculat')||l.includes('payment')||l.includes('adjust'))return qa.score;
-  return 'That is a great question about ASM. For specific guidance on that topic, I recommend reviewing the CMS ASM Participant Roadmap or contacting AmbulatorySpecialtyModel@cms.hhs.gov. The Hexplora team can also walk you through it on a complimentary 30-minute ASM readiness call — join the waitlist above to schedule yours.';
-}
+
+
 
 function ask(q){document.getElementById('chat-in').value=q;sendMsg();}
+
+var qaFallback={
+  'required':'Yes — if your NPI appears on the CMS ASM participant list, participation is mandatory. There is no opt-out. CMS identifies participants based on specialty type (general cardiology for Heart Failure cohort), minimum of 20 EBCM episodes per year, and practice location in a selected geographic area. The preliminary list was released in February 2026. The final list for CY 2027 will be published in late summer 2026.',
+  'deadline':'The data reporting deadline is March 31 each year. If you miss it — or fail to report at least one quality measure at 75% data completeness — you receive a final score of zero and the maximum negative payment adjustment. For 2027 that is -9% on all your Medicare Part B payments. This is automatic.',
+  'cca':'A Collaborative Care Arrangement (CCA) is a formal written agreement between you and a primary care provider who shares at least one of your ASM patients. Required as Improvement Activity IA-2. Must be signed, dated, and active for 90 continuous days. Defines roles, data sharing, co-management, and referral processes. Missing IA-2 costs -10 points on your final score.',
+  'score':'Your final score combines Quality (50%) and Cost (50%), scaled to 100 points. Improvement Activities apply a 0 to -20 point adjustment. Promoting Interoperability applies a 0 to -10 adjustment. Bonus points available for complex patients (+10), small practices (+10), and solo practitioners (+15). Score compared against your regional cohort median to determine payment adjustment.',
+  'payment':'Payment adjustments apply to ALL Medicare Part B covered service payments — not just heart failure claims. Risk levels: 2027 and 2028 at plus or minus 9%, 2029 at plus or minus 10%, 2030 at plus or minus 11%, 2031 at plus or minus 12%. Payment is applied two years after the performance year.',
+  'mips':'ASM participants are fully exempt from MIPS reporting for any performance year they meet ASM eligibility criteria. You do not need to report to MIPS while you are in ASM.',
+  'aco':'Yes — ASM participants can remain in ACOs including MSSP and receive financial incentives from them. You can also participate in other CMS Innovation Center models while in ASM.',
+  'telehealth':'ASM participants and their patients are waived from geographic and originating site restrictions for telehealth. This means your patients can receive telehealth services from any location.',
+  'small':'Small practices of 2 to 15 clinicians receive a bonus of 10 points added to their final score. Solo practitioners receive 15 bonus points. This is designed to offset the compliance burden on smaller practices.',
+  'hrsn':'Health-Related Social Needs screening must be completed for every ASM beneficiary. This includes screening for food insecurity, housing instability, transportation barriers, and utility needs. It is required as part of Improvement Activity IA-1. ASM Navigator includes built-in HRSN screening workflows.',
+  'hexplora':'Hexplora is a health analytics company based in Rocky Hill, CT. We have 7 years of HEDIS certification, CMS Qualified Registry status, and have helped clients achieve over $800 million in MSSP ACO shared savings. ASM Navigator is our purpose-built platform for ASM compliance — covering all four performance categories, deploying in two weeks, with no IT team required. Contact us at hello@asmnavigator.com or call +1 (860)-760-7650.',
+  'contact':'You can reach the Hexplora ASM Navigator team at hello@asmnavigator.com or +1 (860)-760-7650. For official CMS ASM questions contact AmbulatorySpecialtyModel@cms.hhs.gov. The CMS ASM webpage is at cms.gov/priorities/innovation/innovation-models/asm.'
+};
+
+function getFallback(q){
+  var l=q.toLowerCase();
+  if(l.includes('required')||l.includes('mandatory')||l.includes('have to')||l.includes('opt out'))return qaFallback.required;
+  if(l.includes('deadline')||l.includes('march')||l.includes('miss')||l.includes('report'))return qaFallback.deadline;
+  if(l.includes('cca')||l.includes('collaborative')||l.includes('arrangement')||l.includes('pcp')||l.includes('primary care')||l.includes('coordinate'))return qaFallback.cca;
+  if(l.includes('score')||l.includes('calculat')||l.includes('final score')||l.includes('points'))return qaFallback.score;
+  if(l.includes('payment')||l.includes('adjust')||l.includes('percent')||l.includes('dollar')||l.includes('revenue')||l.includes('part b'))return qaFallback.payment;
+  if(l.includes('mips')||l.includes('exempt')||l.includes('waiv'))return qaFallback.mips;
+  if(l.includes('aco')||l.includes('mssp')||l.includes('accountable care')||l.includes('both'))return qaFallback.aco;
+  if(l.includes('telehealth')||l.includes('virtual')||l.includes('remote visit'))return qaFallback.telehealth;
+  if(l.includes('small')||l.includes('solo')||l.includes('bonus')||l.includes('practice size'))return qaFallback.small;
+  if(l.includes('hrsn')||l.includes('social need')||l.includes('screening')||l.includes('food')||l.includes('housing')||l.includes('transport'))return qaFallback.hrsn;
+  if(l.includes('hexplora')||l.includes('navigator')||l.includes('platform')||l.includes('software')||l.includes('tool')||l.includes('help me'))return qaFallback.hexplora;
+  if(l.includes('contact')||l.includes('email')||l.includes('phone')||l.includes('reach')||l.includes('call'))return qaFallback.contact;
+  return 'Great question. For a detailed answer on that specific ASM topic, our team at Hexplora can walk you through it on a complimentary 30-minute ASM readiness call. Email hello@asmnavigator.com or call +1 (860)-760-7650. You can also contact CMS directly at AmbulatorySpecialtyModel@cms.hhs.gov.';
+}
 
 function sendMsg(){
   var inp=document.getElementById('chat-in');
   var q=inp.value.trim();if(!q)return;inp.value='';
   var msgs=document.getElementById('msgs');
   msgs.innerHTML+='<div class="msg user"><div class="avatar av-user">You</div><div class="bubble user">'+q+'</div></div>';
-  msgs.innerHTML+='<div class="msg" id="typing"><div class="avatar av-ai">AI</div><div class="bubble ai" style="color:#9CA3AF">Checking CMS documentation...</div></div>';
+  var tid='t'+Date.now();
+  msgs.innerHTML+='<div class="msg" id="'+tid+'"><div class="avatar av-ai">AI</div><div class="bubble ai" style="color:#9CA3AF">Checking CMS documentation...</div></div>';
   msgs.scrollTop=msgs.scrollHeight;
   document.getElementById('chips').style.display='none';
-  setTimeout(function(){
-    var t=document.getElementById('typing');
-    if(t){t.querySelector('.bubble').style.color='';t.querySelector('.bubble').textContent=getReply(q);}
+
+  var timeout=setTimeout(function(){
+    var t=document.getElementById(tid);
+    if(t){
+      t.querySelector('.bubble').style.color='';
+      t.querySelector('.bubble').textContent=getFallback(q);
+    }
     msgs.scrollTop=msgs.scrollHeight;
-  },800);
+  },3000);
+
+  fetch('/api/chat',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({message:q}),
+    signal:AbortSignal.timeout(8000)
+  })
+  .then(function(r){
+    if(!r.ok)throw new Error('api error');
+    return r.json();
+  })
+  .then(function(data){
+    clearTimeout(timeout);
+    var t=document.getElementById(tid);
+    if(t){
+      t.querySelector('.bubble').style.color='';
+      t.querySelector('.bubble').textContent=data.reply||getFallback(q);
+    }
+    msgs.scrollTop=msgs.scrollHeight;
+  })
+  .catch(function(){
+    clearTimeout(timeout);
+    var t=document.getElementById(tid);
+    if(t&&t.querySelector('.bubble').style.color!==''){
+      t.querySelector('.bubble').style.color='';
+      t.querySelector('.bubble').textContent=getFallback(q);
+    }
+    msgs.scrollTop=msgs.scrollHeight;
+  });
 }
 </script>
 <script src="npi_data.js"></script>

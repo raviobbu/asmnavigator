@@ -536,7 +536,7 @@ function sendMsg(){
     msgs.scrollTop=msgs.scrollHeight;
   },3000);
 
-  fetch('/api/chat',{
+  fetch('https://asm-chat.ravi-obbu.workers.dev', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({message:q}),

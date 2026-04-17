@@ -500,19 +500,21 @@ var qaFallback={
 
 function getFallback(q){
   var l=q.toLowerCase();
-  if(l.includes('required')||l.includes('mandatory')||l.includes('have to')||l.includes('opt out'))return qaFallback.required;
-  if(l.includes('deadline')||l.includes('march')||l.includes('miss')||l.includes('report'))return qaFallback.deadline;
-  if(l.includes('cca')||l.includes('collaborative')||l.includes('arrangement')||l.includes('pcp')||l.includes('primary care')||l.includes('coordinate'))return qaFallback.cca;
-  if(l.includes('score')||l.includes('calculat')||l.includes('final score')||l.includes('points'))return qaFallback.score;
-  if(l.includes('payment')||l.includes('adjust')||l.includes('percent')||l.includes('dollar')||l.includes('revenue')||l.includes('part b'))return qaFallback.payment;
-  if(l.includes('mips')||l.includes('exempt')||l.includes('waiv'))return qaFallback.mips;
-  if(l.includes('aco')||l.includes('mssp')||l.includes('accountable care')||l.includes('both'))return qaFallback.aco;
-  if(l.includes('telehealth')||l.includes('virtual')||l.includes('remote visit'))return qaFallback.telehealth;
-  if(l.includes('small')||l.includes('solo')||l.includes('bonus')||l.includes('practice size'))return qaFallback.small;
-  if(l.includes('hrsn')||l.includes('social need')||l.includes('screening')||l.includes('food')||l.includes('housing')||l.includes('transport'))return qaFallback.hrsn;
-  if(l.includes('hexplora')||l.includes('navigator')||l.includes('platform')||l.includes('software')||l.includes('tool')||l.includes('help me'))return qaFallback.hexplora;
-  if(l.includes('contact')||l.includes('email')||l.includes('phone')||l.includes('reach')||l.includes('call'))return qaFallback.contact;
-  return 'Great question. For a detailed answer on that specific ASM topic, our team at Hexplora can walk you through it on a complimentary 30-minute ASM readiness call. Email hello@asmnavigator.com or call +1 (860)-760-7650. You can also contact CMS directly at AmbulatorySpecialtyModel@cms.hhs.gov.';
+  if(l.match(/participat|mandatory|required|must i|do i have|opt out|eligible|in asm|on the list|my npi/))return qaFallback.required;
+  if(l.match(/deadline|march|miss|report|submit|data|completeness|75|zero score/))return qaFallback.deadline;
+  if(l.match(/cca|collaborative|arrangement|primary care|pcp|coordinate|care plan|referral|ia.2|ia2|improvement activit/))return qaFallback.cca;
+  if(l.match(/score|calculat|point|weight|quality|cost|final|measure|how am i|benchmark|peer/))return qaFallback.score;
+  if(l.match(/payment|adjust|percent|dollar|revenue|part b|money|earn|lose|risk|upside|downside|financial/))return qaFallback.payment;
+  if(l.match(/mips|exempt|waiv|quality payment|qpp/))return qaFallback.mips;
+  if(l.match(/aco|mssp|accountable|shared saving|both program|overlap|concurrent/))return qaFallback.aco;
+  if(l.match(/telehealth|virtual|video|remote|online visit/))return qaFallback.telehealth;
+  if(l.match(/small|solo|bonus|practice size|clinician|group/))return qaFallback.small;
+  if(l.match(/hrsn|social need|screen|food|housing|transport|sdoh|ia.1|ia1/))return qaFallback.hrsn;
+  if(l.match(/hexplora|navigator|platform|software|tool|help me|your product|sign up|demo|pricing/))return qaFallback.hexplora;
+  if(l.match(/contact|email|phone|reach|call|speak|talk|number/))return qaFallback.contact;
+  if(l.match(/when|launch|start|begin|2027|2026|timeline|date|deadline/))return qaFallback.deadline;
+  if(l.match(/what is asm|explain|overview|tell me about|how does asm work/))return qaFallback.required;
+  return qaFallback.score;
 }
 
 function sendMsg(){
